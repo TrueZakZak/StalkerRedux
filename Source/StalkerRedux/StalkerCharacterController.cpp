@@ -9,7 +9,12 @@ AStalkerCharacterController::AStalkerCharacterController()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	
+	FpsCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FpsCamera"));
+	FpsCameraComponent->AttachToComponent(GetCapsuleComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 
+	FpsCameraComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f + BaseEyeHeight));
+	FpsCameraComponent->bUsePawnControlRotation = true;
 }
 
 // Called when the game starts or when spawned
