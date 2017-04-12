@@ -12,8 +12,6 @@ UCLASS()
 class STALKERREDUX_API AStalkerReduxGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-	
-	
-	
-	
+
+	virtual void StartPlay() override;
 };
