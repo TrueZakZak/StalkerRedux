@@ -3,10 +3,9 @@
 #include "StalkerRedux.h"
 #include "StalkerCharacterController.h"
 
-#include "PlayerHands.h"
-
 // Sets default values
 AStalkerCharacterController::AStalkerCharacterController()
+	: bFirstTickInitDone(false)
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -26,19 +25,26 @@ AStalkerCharacterController::AStalkerCharacterController()
 	HandsMesh->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
 }
 
+void AStalkerCharacterController::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	SceneCapture2D->ShowOnlyActorComponents(this);
+}
+
+void AStalkerCharacterController::FirstTickInit()
+{
+	FVector2D ViewportSize;
+	GEngine->GameViewport->GetViewportSize(ViewportSize);
+
+	SceneCapture2D->TextureTarget->InitAutoFormat((int32)ViewportSize.X, (int32)ViewportSize.Y);
+	SceneCapture2D->TextureTarget->UpdateResourceImmediate();
+}
+
 // Called when the game starts or when spawned
 void AStalkerCharacterController::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	//FVector2D ViewportSize;
-	//GEngine->GameViewport->GetViewportSize(ViewportSize);
-	//FVector2D Size = GEngine->GameViewport->GetWindow()->GetSizeInScreen();
-	//GEngine->GameViewport->GetPixelSizeOfScreen
-	//SceneCapture2D->TextureTarget->InitAutoFormat(Size.X, Size.Y);
-	//SceneCapture2D->TextureTarget->UpdateResourceImmediate();
-
-	SceneCapture2D->ShowOnlyActorComponents(this);
 }
 
 void AStalkerCharacterController::MoveForward(float Value)
@@ -68,6 +74,11 @@ void AStalkerCharacterController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (GEngine && !bFirstTickInitDone)
+	{
+		FirstTickInit();
+		bFirstTickInitDone = true;
+	}
 }
 
 // Called to bind functionality to input
