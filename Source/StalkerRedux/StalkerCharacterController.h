@@ -33,6 +33,12 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* FpsCameraComponent;
 
+	UPROPERTY(VisibleAnywhere)
+	USceneCaptureComponent2D* SceneCapture2D;
+
+	UPROPERTY(VisibleAnywhere)
+	USkeletalMeshComponent* HandsMesh;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

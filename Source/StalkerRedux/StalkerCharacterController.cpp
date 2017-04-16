@@ -3,6 +3,7 @@
 #include "StalkerRedux.h"
 #include "StalkerCharacterController.h"
 
+#include "PlayerHands.h"
 
 // Sets default values
 AStalkerCharacterController::AStalkerCharacterController()
@@ -15,6 +16,14 @@ AStalkerCharacterController::AStalkerCharacterController()
 
 	FpsCameraComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f + BaseEyeHeight));
 	FpsCameraComponent->bUsePawnControlRotation = true;
+
+	SceneCapture2D = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("Hands"));
+	SceneCapture2D->AttachToComponent(FpsCameraComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	SceneCapture2D->ShowFlags.SetFog(false);
+
+	HandsMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("HandsMesh"));
+	HandsMesh->AttachToComponent(FpsCameraComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	HandsMesh->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
 }
 
 // Called when the game starts or when spawned
@@ -22,10 +31,14 @@ void AStalkerCharacterController::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(1, 10.0f, FColor::Red, TEXT("Custom Character"));
-	}
+	//FVector2D ViewportSize;
+	//GEngine->GameViewport->GetViewportSize(ViewportSize);
+	//FVector2D Size = GEngine->GameViewport->GetWindow()->GetSizeInScreen();
+	//GEngine->GameViewport->GetPixelSizeOfScreen
+	//SceneCapture2D->TextureTarget->InitAutoFormat(Size.X, Size.Y);
+	//SceneCapture2D->TextureTarget->UpdateResourceImmediate();
+
+	SceneCapture2D->ShowOnlyActorComponents(this);
 }
 
 void AStalkerCharacterController::MoveForward(float Value)
