@@ -28,6 +28,12 @@ public:
 	UFUNCTION()
 	void JumpEnd();
 
+	UFUNCTION()
+	void CrouchStart();
+
+	UFUNCTION()
+	void CrouchEnd();
+
 protected:
 	virtual void PostInitializeComponents() override;
 	        void FirstTickInit();

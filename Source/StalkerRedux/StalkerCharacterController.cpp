@@ -79,6 +79,16 @@ void AStalkerCharacterController::JumpEnd()
 	bPressedJump = false;
 }
 
+void AStalkerCharacterController::CrouchStart()
+{
+	Crouch();
+}
+
+void AStalkerCharacterController::CrouchEnd()
+{
+	UnCrouch();
+}
+
 // Called every frame
 void AStalkerCharacterController::Tick(float DeltaTime)
 {
@@ -98,6 +108,9 @@ void AStalkerCharacterController::SetupPlayerInputComponent(UInputComponent* Pla
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AStalkerCharacterController::JumpStart);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &AStalkerCharacterController::JumpEnd);
+
+	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AStalkerCharacterController::CrouchStart);
+	PlayerInputComponent->BindAction("Crouch", IE_Released, this, &AStalkerCharacterController::CrouchEnd);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AStalkerCharacterController::MoveForward);
 	PlayerInputComponent->BindAxis("MoveStrafe", this, &AStalkerCharacterController::MoveStrafe);
