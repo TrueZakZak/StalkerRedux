@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "StalkerWeapons.h"
+
 #include "Engine/DataAsset.h"
 #include "WeaponsDatabase.generated.h"
 
@@ -15,6 +17,9 @@ struct FWeaponInfo
 
 	UPROPERTY(EditAnywhere)
 	FString ID;
+
+	UPROPERTY(EditAnywhere)
+	EWeaponType Type;
 
 	UPROPERTY(EditAnywhere, Category = ObjectDefinition)
 	TAssetPtr<USkeletalMesh> Mesh;
@@ -37,7 +42,8 @@ class STALKERREDUX_API UWeaponsDatabase : public UDataAsset
 public:
 	UWeaponsDatabase(const FObjectInitializer& Initializer);
 
-	FWeaponInfo* Get(const FString& ID);
+	FWeaponInfo* GetByUID(const FString& ID);
+	FWeaponInfo* GetByType(EWeaponType Type);
 
 private:
 	UPROPERTY(EditAnywhere)

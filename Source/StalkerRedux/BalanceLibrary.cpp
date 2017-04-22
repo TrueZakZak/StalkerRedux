@@ -8,13 +8,22 @@ UBalanceLibrary::UBalanceLibrary(const FObjectInitializer& Initializer)
 {
 }
 
-FWeaponInfo* UBalanceLibrary::GetWeaponInfo(const FString& WpnID)
+FWeaponInfo* UBalanceLibrary::GetWeaponInfoByUID(const FString& WpnID)
 {
 	// Will be gread to do it on iniialization
 	TryLoadAssets();
 
 	UWeaponsDatabase* DB = Weapons.Get();
-	return DB->Get(WpnID);
+	return DB->GetByUID(WpnID);
+}
+
+FWeaponInfo* UBalanceLibrary::GetWeaponInfoByType(EWeaponType Type)
+{
+	// Will be gread to do it on iniialization
+	TryLoadAssets();
+
+	UWeaponsDatabase* DB = Weapons.Get();
+	return DB->GetByType(Type);
 }
 
 void UBalanceLibrary::TryLoadAssets()

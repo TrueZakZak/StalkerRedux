@@ -18,7 +18,8 @@ class STALKERREDUX_API UBalanceLibrary : public UObject
 public:
 	UBalanceLibrary(const FObjectInitializer& Initializer);
 
-	FWeaponInfo* GetWeaponInfo(const FString& WpnID);
+	FWeaponInfo* GetWeaponInfoByUID(const FString& WpnID);
+	FWeaponInfo* GetWeaponInfoByType(EWeaponType Type);
 
 private:
 	UPROPERTY(EditAnywhere)

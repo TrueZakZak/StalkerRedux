@@ -42,11 +42,24 @@ UWeaponsDatabase::UWeaponsDatabase(const FObjectInitializer& Initializer)
 {
 }
 
-FWeaponInfo* UWeaponsDatabase::Get(const FString& ID)
+FWeaponInfo* UWeaponsDatabase::GetByUID(const FString& ID)
 {
 	for (int32 I = 0; I < Items.Num(); ++I)
 	{
 		if (Items[I].ID.Equals(ID))
+		{
+			return &Items[I];
+		}
+	}
+
+	return nullptr;
+}
+
+FWeaponInfo* UWeaponsDatabase::GetByType(EWeaponType Type)
+{
+	for (int32 I = 0; I < Items.Num(); ++I)
+	{
+		if (Items[I].Type == Type)
 		{
 			return &Items[I];
 		}

@@ -52,7 +52,7 @@ void AStalkerCharacterController::BeginPlay()
 
 	if (Success)
 	{
-		FWeaponInfo* WpnInfo = Balance->GetWeaponInfo(TEXT("wpn_vss"));
+		FWeaponInfo* WpnInfo = Balance->GetWeaponInfoByType(EWeaponType::WPN_VINTOREZ);
 		WeaponUser->InitWeapon(WpnInfo);
 	}
 }
