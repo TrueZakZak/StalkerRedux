@@ -3,6 +3,8 @@
 #pragma once
 
 #include "GameFramework/Character.h"
+#include "WeaponUserComponent.h"
+
 #include "StalkerCharacterController.generated.h"
 
 UCLASS()
@@ -40,7 +42,7 @@ protected:
 	USceneCaptureComponent2D* SceneCapture2D;
 
 	UPROPERTY(VisibleAnywhere)
-	USkeletalMeshComponent* HandsMesh;
+	UWeaponUserComponent* WeaponUser;
 
 public:	
 	// Called every frame

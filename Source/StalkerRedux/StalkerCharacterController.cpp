@@ -3,6 +3,8 @@
 #include "StalkerRedux.h"
 #include "StalkerCharacterController.h"
 
+#include "Balance.h"
+
 // Sets default values
 AStalkerCharacterController::AStalkerCharacterController()
 	: bFirstTickInitDone(false)
@@ -20,9 +22,8 @@ AStalkerCharacterController::AStalkerCharacterController()
 	SceneCapture2D->AttachToComponent(FpsCameraComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	SceneCapture2D->ShowFlags.SetFog(false);
 
-	HandsMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("HandsMesh"));
-	HandsMesh->AttachToComponent(FpsCameraComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	HandsMesh->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
+	WeaponUser = CreateDefaultSubobject<UWeaponUserComponent>(TEXT("WeaponUser"));
+	WeaponUser->AttachToComponent(FpsCameraComponent, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 void AStalkerCharacterController::PostInitializeComponents()
@@ -45,6 +46,15 @@ void AStalkerCharacterController::FirstTickInit()
 void AStalkerCharacterController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	bool Success;
+	UBalanceLibrary* Balance = UBalance::Inst(Success);
+
+	if (Success)
+	{
+		FWeaponInfo* WpnInfo = Balance->GetWeaponInfo(TEXT("wpn_vss"));
+		WeaponUser->InitWeapon(WpnInfo);
+	}
 }
 
 void AStalkerCharacterController::MoveForward(float Value)
