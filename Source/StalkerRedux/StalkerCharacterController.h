@@ -23,6 +23,12 @@ public:
 	void MoveStrafe(float Value);
 
 	UFUNCTION()
+	void ShootingStart();
+
+	UFUNCTION()
+	void ShootingStop();
+
+	UFUNCTION()
 	void JumpStart();
 
 	UFUNCTION()

@@ -69,6 +69,16 @@ void AStalkerCharacterController::MoveStrafe(float Value)
 	AddMovementInput(direction, Value);
 }
 
+void AStalkerCharacterController::ShootingStart()
+{
+	WeaponUser->StartShooting();
+}
+
+void AStalkerCharacterController::ShootingStop()
+{
+	WeaponUser->StopShooting();
+}
+
 void AStalkerCharacterController::JumpStart()
 {
 	bPressedJump = true;
@@ -105,6 +115,9 @@ void AStalkerCharacterController::Tick(float DeltaTime)
 void AStalkerCharacterController::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	PlayerInputComponent->BindAction("Shoot", IE_Pressed, this, &AStalkerCharacterController::ShootingStart);
+	PlayerInputComponent->BindAction("Shoot", IE_Released, this, &AStalkerCharacterController::ShootingStop);
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AStalkerCharacterController::JumpStart);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &AStalkerCharacterController::JumpEnd);

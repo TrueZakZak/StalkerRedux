@@ -34,12 +34,24 @@ void UWeaponUserComponent::InitWeapon(FWeaponInfo* WpnInfo)
 
 void UWeaponUserComponent::StartShooting()
 {
+	UAnimInstance* AnimInst = HandsMesh->GetAnimInstance();
+	UBoolProperty* PropBool = FindField<UBoolProperty>(AnimInst->GetClass(), "IsShootingInput");
 
+	if (PropBool != nullptr)
+	{
+		PropBool->SetPropertyValue_InContainer(AnimInst, true);
+	}
 }
 
 void UWeaponUserComponent::StopShooting()
 {
+	UAnimInstance* AnimInst = HandsMesh->GetAnimInstance();
+	UBoolProperty* PropBool = FindField<UBoolProperty>(AnimInst->GetClass(), "IsShootingInput");
 
+	if (PropBool != nullptr)
+	{
+		PropBool->SetPropertyValue_InContainer(AnimInst, false);
+	}
 }
 
 void UWeaponUserComponent::StartAiming()
