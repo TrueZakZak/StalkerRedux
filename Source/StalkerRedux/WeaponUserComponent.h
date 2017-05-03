@@ -20,6 +20,8 @@ public:
 	void StartShooting();
 	void StopShooting();
 
+	void DoShoot();
+
 	void StartAiming();
 	void StopAiming();
 

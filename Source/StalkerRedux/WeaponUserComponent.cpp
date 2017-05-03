@@ -54,6 +54,15 @@ void UWeaponUserComponent::StopShooting()
 	}
 }
 
+void UWeaponUserComponent::DoShoot()
+{
+	if (GEngine)
+	{
+		int32 Key = (int32)FMath::RandRange(0.0, 99999.0f);
+		GEngine->AddOnScreenDebugMessage(Key, 2.0f, FColor::White, TEXT("Shoot"));
+	}
+}
+
 void UWeaponUserComponent::StartAiming()
 {
 
