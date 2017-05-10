@@ -6,6 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "WeaponUserComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponShoot);
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class STALKERREDUX_API UWeaponUserComponent : public USceneComponent
 {
@@ -14,6 +16,9 @@ class STALKERREDUX_API UWeaponUserComponent : public USceneComponent
 public:	
 	// Sets default values for this component's properties
 	UWeaponUserComponent();
+
+	// Called every frame
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void InitWeapon(FWeaponInfo* WpnInfo);
 
@@ -24,6 +29,10 @@ public:
 
 	void StartAiming();
 	void StopAiming();
+
+	FWeaponInfo* GetWeaponInfo();
+
+	FOnWeaponShoot OnShoot;
 
 protected:
 	// Called when the game starts
@@ -36,7 +45,7 @@ protected:
 
 	FWeaponInfo* WeaponInfo;
 
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+private:
+	FRotator GetOrientationWithDispertionApplied(const FRotator& Original) const;
+	FTransform GetProjectileStartingTransform(const FQuat& Orientation) const;
 };

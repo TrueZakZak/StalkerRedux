@@ -10,9 +10,13 @@ void UAnimNotifyWeaponShot::Notify(USkeletalMeshComponent* MeshComp, UAnimSequen
 	Super::Notify(MeshComp, Animation);
 
 	auto *Owner = MeshComp->GetOwner();
+	if (!Owner) return;
+
 	auto *User = Owner->GetComponentByClass(UWeaponUserComponent::StaticClass());
+	if (!User) return;
 
 	auto* WeaponUser = Cast<UWeaponUserComponent>(User);
+	if (!WeaponUser) return;
 
 	ensureMsgf(WeaponUser != nullptr, TEXT("WeaponUser component is required for shooting"));
 

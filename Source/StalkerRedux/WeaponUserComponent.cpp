@@ -54,13 +54,59 @@ void UWeaponUserComponent::StopShooting()
 	}
 }
 
+FWeaponInfo* UWeaponUserComponent::GetWeaponInfo()
+{
+	return WeaponInfo;
+}
+
+FRotator UWeaponUserComponent::GetOrientationWithDispertionApplied(const FRotator& Original) const
+{
+	float DispertionMin = WeaponInfo->ShootingSettings.DispertionRateMin;
+	float DispertionMax = WeaponInfo->ShootingSettings.DispertionRateMax;
+
+	float DispertionYaw = FMath::RandRange(DispertionMin, DispertionMax);
+	float DispertionPitch = FMath::RandRange(DispertionMin, DispertionMax);
+
+	FRotator Dir(Original);
+
+	Dir.Yaw += DispertionYaw * (FMath::RandBool() ? 1.0f : -1.0f);
+	Dir.Pitch += DispertionPitch * (FMath::RandBool() ? 1.0f : -1.0f);
+
+	return Dir;
+}
+
+FTransform UWeaponUserComponent::GetProjectileStartingTransform(const FQuat& Orientation) const
+{
+	const USkeletalMeshSocket *MuzzleSocket = HandsMesh->GetSocketByName("muzzle_sfx");
+	ensureMsgf(MuzzleSocket != nullptr, TEXT("Failed to find weapon muzzle socket"));
+
+	FTransform MuzzleTransform = MuzzleSocket->GetSocketTransform(HandsMesh);
+	FTransform ProjectileTransform = FTransform::Identity;
+	
+	ProjectileTransform.SetTranslation(MuzzleTransform.GetTranslation());
+	ProjectileTransform.SetRotation(Orientation);
+
+	return ProjectileTransform;
+}
+
 void UWeaponUserComponent::DoShoot()
 {
-	if (GEngine)
-	{
-		int32 Key = (int32)FMath::RandRange(0.0, 99999.0f);
-		GEngine->AddOnScreenDebugMessage(Key, 2.0f, FColor::White, TEXT("Shoot"));
-	}
+	FVector EyesPos;
+	FRotator EyesDir;
+	GetOwner()->GetActorEyesViewPoint(EyesPos, EyesDir);
+
+	FRotator ShotDir = GetOrientationWithDispertionApplied(EyesDir);
+	FTransform Transform = GetProjectileStartingTransform(ShotDir.Quaternion());
+
+	UWorld *World = GetWorld();
+
+	FActorSpawnParameters SpawnParam;
+	SpawnParam.Owner = GetOwner();
+
+	AProjectile *Projectile = World->SpawnActor<AProjectile>(WeaponInfo->Projectile, Transform, SpawnParam);
+	Projectile->FireInDirection(ShotDir.Vector());
+
+	OnShoot.Broadcast();
 }
 
 void UWeaponUserComponent::StartAiming()
@@ -85,8 +131,8 @@ void UWeaponUserComponent::BeginDestroy()
 
 	if (WeaponInfo)
 	{
-		WeaponInfo->UnloadAssets();
-		WeaponInfo = nullptr;
+		//WeaponInfo->UnloadAssets();
+		//WeaponInfo = nullptr;
 	}
 }
 

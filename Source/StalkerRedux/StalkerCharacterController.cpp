@@ -24,6 +24,7 @@ AStalkerCharacterController::AStalkerCharacterController()
 
 	WeaponUser = CreateDefaultSubobject<UWeaponUserComponent>(TEXT("WeaponUser"));
 	WeaponUser->AttachToComponent(FpsCameraComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	WeaponUser->OnShoot.AddDynamic(this, &AStalkerCharacterController::HandleOnWeaponShoot);
 }
 
 void AStalkerCharacterController::PostInitializeComponents()
@@ -55,6 +56,13 @@ void AStalkerCharacterController::BeginPlay()
 		FWeaponInfo* WpnInfo = Balance->GetWeaponInfoByType(EWeaponType::WPN_VINTOREZ);
 		WeaponUser->InitWeapon(WpnInfo);
 	}
+}
+
+void AStalkerCharacterController::BeginDestroy()
+{
+	Super::BeginDestroy();
+
+	//WeaponUser->OnShoot.Clear();
 }
 
 void AStalkerCharacterController::MoveForward(float Value)
@@ -130,4 +138,16 @@ void AStalkerCharacterController::SetupPlayerInputComponent(UInputComponent* Pla
 
 	PlayerInputComponent->BindAxis("Turn", this, &AStalkerCharacterController::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("LookUp", this, &AStalkerCharacterController::AddControllerPitchInput);
+}
+
+void AStalkerCharacterController::HandleOnWeaponShoot()
+{
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(9923, 20.0f, FColor::Yellow, TEXT("Sound"));
+	}
+
+	auto* Info = WeaponUser->GetWeaponInfo();
+	auto* Sound = Info->AudioSetup.Fire.Get();
+	UGameplayStatics::PlaySound2D(this, Sound);
 }

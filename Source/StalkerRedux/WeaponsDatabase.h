@@ -3,9 +3,38 @@
 #pragma once
 
 #include "StalkerWeapons.h"
+#include "Projectile.h"
 
 #include "Engine/DataAsset.h"
 #include "WeaponsDatabase.generated.h"
+
+/**
+ *
+ */
+USTRUCT()
+struct FShootingSettings
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditAnywhere) float DispertionRateMin;
+	UPROPERTY(EditAnywhere) float DispertionRateMax;
+
+	UPROPERTY(EditAnywhere) float FireRate;
+};
+
+USTRUCT()
+struct FWeaponAudioSetup
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditAnywhere) TAssetPtr<USoundWave> Fire;
+	UPROPERTY(EditAnywhere) TAssetPtr<USoundWave> Misfire;
+	UPROPERTY(EditAnywhere) TAssetPtr<USoundWave> Reload;
+	UPROPERTY(EditAnywhere) TAssetPtr<USoundWave> Draw;
+
+	void Load();
+	void Unload();
+};
 
 /**
  *
@@ -15,17 +44,15 @@ struct FWeaponInfo
 {
 	GENERATED_USTRUCT_BODY()
 
-	UPROPERTY(EditAnywhere)
-	FString ID;
+	UPROPERTY(EditAnywhere) FString           ID;
+	UPROPERTY(EditAnywhere) EWeaponType       Type;
+	UPROPERTY(EditAnywhere) FShootingSettings ShootingSettings;
+	UPROPERTY(EditAnywhere) FWeaponAudioSetup AudioSetup;
 
-	UPROPERTY(EditAnywhere)
-	EWeaponType Type;
+	UPROPERTY(EditAnywhere, Category = Assets) TAssetPtr<USkeletalMesh>  Mesh;
+	UPROPERTY(EditAnywhere, Category = Assets) TAssetPtr<UAnimBlueprint> AnimBlueprint;
 
-	UPROPERTY(EditAnywhere, Category = ObjectDefinition)
-	TAssetPtr<USkeletalMesh> Mesh;
-
-	UPROPERTY(EditAnywhere, Category = ObjectDefinition)
-	TAssetPtr<UAnimBlueprint> AnimBlueprint;
+	UPROPERTY(EditAnywhere) TSubclassOf<AProjectile> Projectile;
 
 	void LoadAssets();
 	void UnloadAssets();
@@ -46,6 +73,5 @@ public:
 	FWeaponInfo* GetByType(EWeaponType Type);
 
 private:
-	UPROPERTY(EditAnywhere)
-	TArray<FWeaponInfo> Items;
+	UPROPERTY(EditAnywhere) TArray<FWeaponInfo> Items;
 };

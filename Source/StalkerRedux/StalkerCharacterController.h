@@ -16,29 +16,17 @@ public:
 	// Sets default values for this character's properties
 	AStalkerCharacterController();
 
-	UFUNCTION()
-	void MoveForward(float Value);
+	UFUNCTION() void MoveForward(float Value);
+	UFUNCTION() void MoveStrafe(float Value);
 
-	UFUNCTION()
-	void MoveStrafe(float Value);
+	UFUNCTION() void ShootingStart();
+	UFUNCTION() void ShootingStop();
 
-	UFUNCTION()
-	void ShootingStart();
+	UFUNCTION() void JumpStart();
+	UFUNCTION() void JumpEnd();
 
-	UFUNCTION()
-	void ShootingStop();
-
-	UFUNCTION()
-	void JumpStart();
-
-	UFUNCTION()
-	void JumpEnd();
-
-	UFUNCTION()
-	void CrouchStart();
-
-	UFUNCTION()
-	void CrouchEnd();
+	UFUNCTION() void CrouchStart();
+	UFUNCTION() void CrouchEnd();
 
 protected:
 	virtual void PostInitializeComponents() override;
@@ -46,15 +34,11 @@ protected:
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void BeginDestroy() override;
 
-	UPROPERTY(VisibleAnywhere)
-	UCameraComponent* FpsCameraComponent;
-
-	UPROPERTY(VisibleAnywhere)
-	USceneCaptureComponent2D* SceneCapture2D;
-
-	UPROPERTY(VisibleAnywhere)
-	UWeaponUserComponent* WeaponUser;
+	UPROPERTY(VisibleAnywhere) UCameraComponent*         FpsCameraComponent;
+	UPROPERTY(VisibleAnywhere) USceneCaptureComponent2D* SceneCapture2D;
+	UPROPERTY(VisibleAnywhere) UWeaponUserComponent*     WeaponUser;
 
 public:	
 	// Called every frame
@@ -62,6 +46,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION() void HandleOnWeaponShoot();
 
 private:
 	bool bFirstTickInitDone;

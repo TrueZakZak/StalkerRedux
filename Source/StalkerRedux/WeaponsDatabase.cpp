@@ -3,6 +3,22 @@
 #include "StalkerRedux.h"
 #include "WeaponsDatabase.h"
 
+void FWeaponAudioSetup::Load()
+{
+	FStreamableManager Streamable;
+
+	if (Fire.IsPending())
+	{
+		const FStringAssetReference& AssetRef = Fire.ToStringReference();
+		Fire = Cast<USoundWave>(Streamable.SynchronousLoad(AssetRef));
+	}
+}
+
+void FWeaponAudioSetup::Unload()
+{
+	// Not implemented yet
+}
+
 void FWeaponInfo::LoadAssets()
 {
 	FStreamableManager Streamable;
@@ -18,11 +34,15 @@ void FWeaponInfo::LoadAssets()
 		const FStringAssetReference& AssetRef = AnimBlueprint.ToStringReference();
 		AnimBlueprint = Cast<UAnimBlueprint>(Streamable.SynchronousLoad(AssetRef));
 	}
+
+	AudioSetup.Load();
 }
 
 void FWeaponInfo::UnloadAssets()
 {
 	FStreamableManager Streamable;
+
+	AudioSetup.Unload();
 
 	if (!Mesh.IsPending())
 	{
