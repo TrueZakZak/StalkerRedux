@@ -4,6 +4,7 @@
 
 #include "GameFramework/Character.h"
 #include "WeaponUserComponent.h"
+#include "ValueRusher.h"
 
 #include "StalkerCharacterController.generated.h"
 
@@ -15,12 +16,16 @@ class STALKERREDUX_API AStalkerCharacterController : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AStalkerCharacterController();
+	~AStalkerCharacterController();
 
 	UFUNCTION() void MoveForward(float Value);
 	UFUNCTION() void MoveStrafe(float Value);
 
 	UFUNCTION() void ShootingStart();
 	UFUNCTION() void ShootingStop();
+
+	UFUNCTION() void AimStart();
+	UFUNCTION() void AimStop();
 
 	UFUNCTION() void JumpStart();
 	UFUNCTION() void JumpEnd();
@@ -36,9 +41,9 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void BeginDestroy() override;
 
-	UPROPERTY(VisibleAnywhere) UCameraComponent*         FpsCameraComponent;
-	UPROPERTY(VisibleAnywhere) USceneCaptureComponent2D* SceneCapture2D;
-	UPROPERTY(VisibleAnywhere) UWeaponUserComponent*     WeaponUser;
+	UPROPERTY(EditAnywhere) class UCameraComponent*          FpsCameraComponent;
+	UPROPERTY(EditAnywhere) class UHudSceneCaptureComponent* SceneCapture2D;
+	UPROPERTY(EditAnywhere) class UWeaponUserComponent*      WeaponUser;
 
 public:	
 	// Called every frame
@@ -51,4 +56,7 @@ public:
 
 private:
 	bool bFirstTickInitDone;
+
+	UValueRusher MainZoomRusher;
+	UValueRusher WeaponZoomRusher;
 };

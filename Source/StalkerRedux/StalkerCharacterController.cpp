@@ -4,6 +4,7 @@
 #include "StalkerCharacterController.h"
 
 #include "Balance.h"
+#include "HudSceneCaptureComponent.h"
 
 // Sets default values
 AStalkerCharacterController::AStalkerCharacterController()
@@ -18,13 +19,20 @@ AStalkerCharacterController::AStalkerCharacterController()
 	FpsCameraComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f + BaseEyeHeight));
 	FpsCameraComponent->bUsePawnControlRotation = true;
 
-	SceneCapture2D = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("Hands"));
+	SceneCapture2D = CreateDefaultSubobject<UHudSceneCaptureComponent>(TEXT("Hands"));
 	SceneCapture2D->AttachToComponent(FpsCameraComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	SceneCapture2D->ShowFlags.SetFog(false);
 
 	WeaponUser = CreateDefaultSubobject<UWeaponUserComponent>(TEXT("WeaponUser"));
 	WeaponUser->AttachToComponent(FpsCameraComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	WeaponUser->OnShoot.AddDynamic(this, &AStalkerCharacterController::HandleOnWeaponShoot);
+
+	MainZoomRusher.Init(90.0f);
+	WeaponZoomRusher.Init(50.0f);
+}
+
+AStalkerCharacterController::~AStalkerCharacterController()
+{
 }
 
 void AStalkerCharacterController::PostInitializeComponents()
@@ -61,8 +69,6 @@ void AStalkerCharacterController::BeginPlay()
 void AStalkerCharacterController::BeginDestroy()
 {
 	Super::BeginDestroy();
-
-	//WeaponUser->OnShoot.Clear();
 }
 
 void AStalkerCharacterController::MoveForward(float Value)
@@ -85,6 +91,18 @@ void AStalkerCharacterController::ShootingStart()
 void AStalkerCharacterController::ShootingStop()
 {
 	WeaponUser->StopShooting();
+}
+
+void AStalkerCharacterController::AimStart()
+{
+	MainZoomRusher.RushTo(60.0f);
+	WeaponZoomRusher.RushTo(40.0f);
+}
+
+void AStalkerCharacterController::AimStop()
+{
+	MainZoomRusher.RushBack(90.0f);
+	WeaponZoomRusher.RushBack(50.0f);
 }
 
 void AStalkerCharacterController::JumpStart()
@@ -117,6 +135,12 @@ void AStalkerCharacterController::Tick(float DeltaTime)
 		FirstTickInit();
 		bFirstTickInitDone = true;
 	}
+
+	MainZoomRusher.Update(DeltaTime);
+	WeaponZoomRusher.Update(DeltaTime);
+
+	FpsCameraComponent->SetFieldOfView(MainZoomRusher.GetCurrentValue());
+	SceneCapture2D->SetFieldOfView(WeaponZoomRusher.GetCurrentValue());
 }
 
 // Called to bind functionality to input
@@ -126,6 +150,9 @@ void AStalkerCharacterController::SetupPlayerInputComponent(UInputComponent* Pla
 
 	PlayerInputComponent->BindAction("Shoot", IE_Pressed, this, &AStalkerCharacterController::ShootingStart);
 	PlayerInputComponent->BindAction("Shoot", IE_Released, this, &AStalkerCharacterController::ShootingStop);
+
+	PlayerInputComponent->BindAction("Aim", IE_Pressed, this, &AStalkerCharacterController::AimStart);
+	PlayerInputComponent->BindAction("Aim", IE_Released, this, &AStalkerCharacterController::AimStop);
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AStalkerCharacterController::JumpStart);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &AStalkerCharacterController::JumpEnd);

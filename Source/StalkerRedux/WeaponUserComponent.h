@@ -40,8 +40,7 @@ protected:
 
 	virtual void BeginDestroy() override;
 
-	UPROPERTY(VisibleAnywhere)
-	USkeletalMeshComponent* HandsMesh;
+	UPROPERTY(EditAnywhere) class USkeletalMeshComponent* HandsMesh;
 
 	FWeaponInfo* WeaponInfo;
 
